@@ -31,7 +31,7 @@ def load_data(repo_url):
 
 def main():
     # CHANGE THIS to your GitHub repo URL
-    repo_url = "https://github.com/jessicabpa9-hub/data_pipeline_product_reviews.git"
+    repo_url = "https://github.com/jessicabpa9-hub/test4.git"
     load_data(repo_url)
 
 
