@@ -2,3 +2,5 @@ mongomock
 pandas
 requests
 pytest
+torch==2.9.1 
+transformers==4.45.2

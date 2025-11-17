@@ -1,36 +1,39 @@
 import os
 import subprocess
 
-repo_url= "https://github.com/jessicabpa9-hub/data_pipeline_product_reviews.git"
-
 def load_data(repo_url):
     git_cmd = "git"
 
-    # Ensure .git exists
+    # Initialize Git repo if it doesn't exist
     if not os.path.exists(".git"):
-        subprocess.run([git_cmd, "init"])
-        subprocess.run([git_cmd, "branch", "-M", "main"])
-        subprocess.run([git_cmd, "remote", "add", "origin", repo_url])
+        subprocess.run([git_cmd, "init"], check=True)
+        subprocess.run([git_cmd, "branch", "-M", "main"], check=True)
+        subprocess.run([git_cmd, "remote", "add", "origin", repo_url], check=True)
     else:
-        # Always update the remote to the provided repo URL
-        subprocess.run([git_cmd, "remote", "set-url", "origin", repo_url])
+        # Update remote URL in case it changed
+        subprocess.run([git_cmd, "remote", "set-url", "origin", repo_url], check=True)
 
-    # Add everything
-    subprocess.run([git_cmd, "add", "."])
+    # Stage all changes
+    subprocess.run([git_cmd, "add", "."], check=True)
 
-    # Basic Git identity (user can change if needed)
-    subprocess.run([git_cmd, "config", "user.name", "auto-user"])
-    subprocess.run([git_cmd, "config", "user.email", "auto@example.com"])
+    # Configure Git user info
+    subprocess.run([git_cmd, "config", "user.name", "auto-user"], check=True)
+    subprocess.run([git_cmd, "config", "user.email", "auto@example.com"], check=True)
 
-    # Commit
-    subprocess.run([git_cmd, "commit", "--allow-empty", "-m", "Publish processed data"])
+    # Commit changes (allow empty commit)
+    subprocess.run([git_cmd, "commit", "--allow-empty", "-m", "Publish processed data"], check=True)
 
-    # Force push so remote always matches local
-    subprocess.run([git_cmd, "push", "-u", "origin", "main", "--force"])
+    # Force push to make remote match local
+    subprocess.run([git_cmd, "push", "-u", "origin", "main", "--force"], check=True)
 
     print(f"Published updates to GitHub repo: {repo_url}")
 
 
-if __name__ == "__main__":
-    # USER CAN CHANGE THIS:
+def main():
+    # CHANGE THIS to your GitHub repo URL
+    repo_url = "https://github.com/jessicabpa9-hub/data_pipeline_product_reviews.git"
     load_data(repo_url)
+
+
+if __name__ == "__main__":
+    main()
