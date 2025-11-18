@@ -1,39 +1,45 @@
 import os
 import subprocess
 
-def load_data(repo_url):
-    git_cmd = "git"
+def run_git_command(args):
+    """Run a git command and handle errors gracefully."""
+    try:
+        subprocess.run(["git"] + args, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Git command failed: {' '.join(args)}")
+        print(e)
 
+def load_data(repo_url, branch="main", commit_message="Publish processed data", user_name="auto-user", user_email="auto@example.com"):
     # Initialize Git repo if it doesn't exist
     if not os.path.exists(".git"):
-        subprocess.run([git_cmd, "init"], check=True)
-        subprocess.run([git_cmd, "branch", "-M", "main"], check=True)
-        subprocess.run([git_cmd, "remote", "add", "origin", repo_url], check=True)
+        run_git_command(["init"])
+        run_git_command(["branch", "-M", branch])
+        run_git_command(["remote", "add", "origin", repo_url])
     else:
         # Update remote URL in case it changed
-        subprocess.run([git_cmd, "remote", "set-url", "origin", repo_url], check=True)
+        run_git_command(["remote", "set-url", "origin", repo_url])
 
     # Stage all changes
-    subprocess.run([git_cmd, "add", "."], check=True)
+    run_git_command(["add", "."])
 
     # Configure Git user info
-    subprocess.run([git_cmd, "config", "user.name", "auto-user"], check=True)
-    subprocess.run([git_cmd, "config", "user.email", "auto@example.com"], check=True)
+    run_git_command(["config", "user.name", user_name])
+    run_git_command(["config", "user.email", user_email])
 
     # Commit changes (allow empty commit)
-    subprocess.run([git_cmd, "commit", "--allow-empty", "-m", "Publish processed data"], check=True)
+    run_git_command(["commit", "--allow-empty", "-m", commit_message])
 
-    # Force push to make remote match local
-    subprocess.run([git_cmd, "push", "-u", "origin", "main", "--force"], check=True)
+    # Safer push: use --force-with-lease instead of --force
+    run_git_command(["push", "-u", "origin", branch, "--force-with-lease"])
 
-    print(f"Published updates to GitHub repo: {repo_url}")
-
+    print(f"Published updates to GitHub repo: {repo_url} on branch {branch}")
 
 def main():
-    # CHANGE THIS to your GitHub repo URL
-    repo_url = "https://github.com/jessicabpa9-hub/test4.git"
-    load_data(repo_url)
-
+    # CHANGE THESE to your GitHub repo details
+    repo_url = "https://github.com/jessicabpa9-hub/test5.git"
+    branch = "main"
+    commit_message = "Publish processed data safely"
+    load_data(repo_url, branch, commit_message)
 
 if __name__ == "__main__":
     main()

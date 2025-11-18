@@ -4,6 +4,8 @@ from pathlib import Path
 import pandas as pd
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+#tokenizer converts raw text into numerical tokens that the model understands
+#AutoModelForSequenceClassification loads a pretrained Transformer model configured for classification tasks
 
 
 def add_sentiment(
